@@ -4,5 +4,5 @@ This is a Shell lookalike (simplified), It executes commands, including argument
 Other options Will be added later.
 
 ## Authors
-Mohammed EL HADDOUMI
+Mohammed EL HADDOUMI  
 Ismail GUENNOUN
