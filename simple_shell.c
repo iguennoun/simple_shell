@@ -86,3 +86,55 @@ char *checkCommand(char *command, char **env)
         }
         return (NULL);
 }
+
+/**
+ * main - The main function of our simple shell program
+ * @ac : Nbr of arguments
+ * @av : Arrays of strings (arguments)
+ * @env : The environment variables
+ *
+ * Return: Always 0.
+ */
+int main(int ac, char **av, char **env)
+{
+        char *shell_name = "($) ", *shell_line = NULL, *cmd = NULL;
+        size_t linecap = 0;
+        ssize_t linelen;
+        char **tokens = NULL;
+        pid_t pid;
+        int status;
+
+        (void) ac, (void) av;
+        while (1)
+        {
+                printf("%s", shell_name);
+                linelen = getline(&shell_line, &linecap, stdin);
+                if (linelen == EOF)
+                {
+                        exit(EXIT_FAILURE);
+                }
+                shell_line[linelen - 1] = '\0';
+
+                /* tokens = malloc(sizeof(char *) * 1024); */
+                tokens = tokensInLine(shell_line);
+                /* printf("%s\n", shell_line); */
+                if (strcmp(tokens[0], "exit") == 0)
+                        exit(EXIT_SUCCESS);
+
+                pid = fork();
+                if (pid == 0)
+                {
+                        cmd = checkCommand(tokens[0], env);
+                        if (cmd)
+                                execve(cmd, tokens, env);
+                        else
+                                printf("%s: No such file or directory\n", av[0]);
+			exit(EXIT_SUCCESS);
+                }
+                else
+                        wait(&status);
+                /* free(shell_line);*/
+                free(tokens);
+        }
+        exit(EXIT_SUCCESS);
+}
