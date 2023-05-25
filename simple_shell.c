@@ -30,6 +30,7 @@ char **tokensInLine(char *str)
 		param = strtok(NULL, delimiters);
 	}
 	params[i] = NULL;
+	free(params);
 	return (params);
 }
 
@@ -114,26 +115,26 @@ int main(int ac, char **av, char **env)
 			exit(EXIT_FAILURE);
 		}
 		shell_line[linelen - 1] = '\0';
-
-		/* tokens = malloc(sizeof(char *) * 1024); */
+		tokens = malloc(sizeof(char *) * 1024);
 		tokens = tokensInLine(shell_line);
-		/* printf("%s\n", shell_line); */
 		if (strcmp(tokens[0], "exit") == 0)
 			exit(EXIT_SUCCESS);
-
-		cmd = checkCommand(tokens[0], env);
-		if (cmd)
-		{
-			pid = fork();
-			if (pid == 0)
-				execve(cmd, tokens, env);
-			else
-				wait(&status);
-		}
 		else
-			printf("%s: No such file or directory\n", av[0]);
-		exit(EXIT_SUCCESS);
-		/* free(shell_line);*/
+		{
+			cmd = checkCommand(tokens[0], env);
+			if (cmd)
+			{
+				pid = fork();
+				if (pid == 0)
+					execve(cmd, tokens, env);
+				else
+					wait(&status);
+			}
+			else
+				printf("%s: No such file or directory\n", av[0]);
+			free(cmd);
+		}
+		free(shell_line);
 		free(tokens);
 	}
 	exit(EXIT_SUCCESS);
