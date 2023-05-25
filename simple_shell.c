@@ -121,18 +121,18 @@ int main(int ac, char **av, char **env)
 		if (strcmp(tokens[0], "exit") == 0)
 			exit(EXIT_SUCCESS);
 
-		pid = fork();
-		if (pid == 0)
+		cmd = checkCommand(tokens[0], env);
+		if (cmd)
 		{
-			cmd = checkCommand(tokens[0], env);
-			if (cmd)
+			pid = fork();
+			if (pid == 0)
 				execve(cmd, tokens, env);
 			else
-				printf("%s: No such file or directory\n", av[0]);
-			exit(EXIT_SUCCESS);
+				wait(&status);
 		}
 		else
-			wait(&status);
+			printf("%s: No such file or directory\n", av[0]);
+		exit(EXIT_SUCCESS);
 		/* free(shell_line);*/
 		free(tokens);
 	}
