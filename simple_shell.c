@@ -55,3 +55,34 @@ char *getEnvVarVal(const char *name, char **env)
         }
         return (NULL);
 }
+
+/**
+ * checkCommand - Check if a program is in the Path
+ * @command : The command to execute
+ * @env : Environment variables
+ *
+ * Return: The full path of a command or NULL
+ */
+char *checkCommand(char *command, char **env)
+{
+        char *path_dirs = getEnvVarVal("PATH", env);
+        char *path_dir;
+        char *cmd_full_path;
+        struct stat st;
+
+        path_dir = strtok(path_dirs, ":");
+        while (path_dir)
+        {
+                cmd_full_path = malloc(strlen(path_dir) + strlen(command) + 2);
+                strcpy(cmd_full_path, path_dir);
+                strcat(cmd_full_path, "/");
+                strcat(cmd_full_path, command);
+               
+	       	if (stat(cmd_full_path, &st) == 0)
+                        return (cmd_full_path);
+               
+	       	free(cmd_full_path);
+                path_dir = strtok(NULL, ":");
+        }
+        return (NULL);
+}
