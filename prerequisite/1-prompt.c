@@ -59,7 +59,7 @@ int main(int ac, char **av)
 
 	printf(" ***** 1-\n");
 	write(1, "$ ", 2);
-	/* 1 = stdout = read from standart output */
+	/* 1 = stdout = write to the standart output */
 	linelen = getline(&line, &linecap, stdin);
 	if (linelen == EOF)
 	{
