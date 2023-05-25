@@ -16,6 +16,7 @@ char **tokensInLine(char *str)
 {
         char **params = NULL, *param, delimiters[] = " \n\t";
         unsigned int i = 0;
+
         param = strtok(str, delimiters);
         while (param)
         {
@@ -30,4 +31,27 @@ char **tokensInLine(char *str)
         }
         params[i] = NULL;
         return (params);
+}
+
+/**
+ * getEnvVarVal - Gets an environment variable
+ * @name : The name of the variable to get
+ * @env : Environment variables
+ *
+ * Return: The value is any of the @name or NULL
+ */
+char *getEnvVarVal(const char *name, char **env)
+{
+        char **environ = env;
+        int i = 0;
+        char *envvkey;
+
+        while (environ[i])
+        {
+                envvkey = strtok(environ[i], "=");
+                if (strcmp(envvkey, name) == 0)
+                        return (strtok(NULL, "="));
+                i++;
+        }
+        return (NULL);
 }
